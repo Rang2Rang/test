@@ -14,27 +14,36 @@
 
 
 	// 입력받은 동과 메뉴로 데이터베이스 조회하는 쿼리문 생성
-	$store_sql = "SELECT dong, name, menu, address, number, park, open_time, close_time 
-	          FROM yangsan_store_info 
-	          WHERE menu LIKE '%$food%'";
+	$select_sql = "SELECT dong, name, menu, address, number, park, open_time, close_time FROM yangsan_store_info";
 
-	// 동 정보를 추가하여 쿼리문 생성
-	$store_dong_sql = $store_sql . " AND dong = '$dong'";
-
+	// 동과 메뉴 정보를 추가하여 쿼리문 생성
+	$store_dong_sql = $select_sql . " WHERE menu LIKE '%$food%' AND dong = '$dong'";
+	// 동과 메뉴를 둘 다 입력했을 때 조회되는 정보 가공
 	$query_result_store_dong = sql($store_dong_sql);
 	$query_result_store_dong = select_process($query_result_store_dong);
 
+	//메뉴만 입력시
+	$store_sql = $select_sql . " WHERE menu LIKE '%$food%'";
 
+	//메뉴만 입력했을 때 조회되는 정보 가공
     $query_result_store = sql($store_sql);
     $query_result_store = select_process($query_result_store);
 
- 
+    //동만 입력시
 
-    $total_data = array();
+    $dong_sql = $select_sql. " WHERE dong = '$dong'";
+
+    //동만 입력했을 때 조회되는 정보 가공
+    $query_result_dong = sql($dong_sql);
+    $query_result_dong = select_process($query_result_dong);
+
+	 
+    //메뉴데이터
+    $menu_data = array();
 
     for($i=0;$i<$query_result_store['output_cnt'];$i++){
 
-    	array_push($total_data, $query_result_store[$i]);
+    	array_push($menu_data, $query_result_store[$i]);
     }
 
 
@@ -297,7 +306,7 @@
 <?php 
     if(empty($dong) && $query_result_store['output_cnt'] > 0){
         for($i=0; $i<$query_result_store['output_cnt']; $i++){
-            $store = $total_data[$i];
+            $store = $menu_data[$i];
             ?>
             <p id="abc" style="margin-bottom: 5px;" onclick="gogo();">
                 <?php echo $store['dong']; ?> 
@@ -321,5 +330,7 @@
 		</div>
 	</div>
 
+</body>
+</html>
 </body>
 </html>
