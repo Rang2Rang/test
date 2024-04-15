@@ -1,0 +1,68 @@
+
+		
+	#container {
+		display: flex;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	#map {
+		width: 700px;
+		height: 800px;
+		border:  3px solid white;
+		border-radius: 15px;
+	}
+
+	#textbox {
+		width: 400px;
+		height: 800px;
+		background-color: #dfebf5;
+		border: 3px solid #80beed;
+		border-radius: 15px;
+		text-align: center; /* 추가 */
+	}
+
+	#dong,#food,#time {
+		width: 300px;
+		height: 40px;
+		margin: 20px 0 auto; /* 가운데 정렬을 위한 마진 설정 */
+		border: 3px solid #80beed;
+		border-radius: 10px;
+	}
+	#abc{
+		margin: 20px 0  auto;
+		font-size: x-large;
+		font-family: "Orbit", sans-serif;
+		color: #454f52;
+		font-weight: bold;
+	}
+	#head{
+		margin: 15px 0 auto;
+		margin-bottom: 30px;
+		font-size: 80px;
+		font-weight: 300;
+		font-family: "Black Han Sans", sans-serif;
+		color: #2d65c4;
+	}
+	#btn{
+		width: 200px;
+		color: white;
+		background-color: #2d65c4;
+		margin: 35px 0 auto;
+		height: 40px;
+		font-weight: 100;
+		border-radius: 5px;
+		font-size: 22px;
+		font-family: "Black Han Sans", sans-serif;
+	}
+
+	#zxc{
+		margin: 10px 0  auto;
+		font-size: 19px;
+		font-family: "Orbit", sans-serif;
+		color: #454f52;
+		font-weight: bold;
+
+	}
