@@ -22,7 +22,7 @@
 <body>
 	<div id="container">
 		<div id="textbox">
-			<p id="head">양산 음식점 탐지기</p>
+			<p id="head">양산 <br>안심식당<br> 탐지기</p>
 			<p id="abc">동을 입력해주세요</p>
 			<input  type="text" id="dong">
 			<p id="abc" style="font-size: 19px;">정확하게 입력해주세요!<br>ex) 물금❌ 물금읍⭕</p>

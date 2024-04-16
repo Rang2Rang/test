@@ -37,15 +37,45 @@
     $query_result_dong = sql($dong_sql);
     $query_result_dong = select_process($query_result_dong);
 
+    $rand_sql = "SELECT * FROM yangsan_store_info ORDER BY RAND() LIMIT 1;";
+
+    $query_result_random = sql($rand_sql);
+    $query_result_random = select_process($query_result_random);
+
+   
+
 	 
     //메뉴데이터
     $menu_data = array();
+    //동+메뉴데이터
+    $dong_menu_data = array();
+    //동데이터
+    $dong_data = array();
+    //랜덤데이터
+    $random_data = array();
 
+    //메뉴데이터가공
     for($i=0;$i<$query_result_store['output_cnt'];$i++){
 
     	array_push($menu_data, $query_result_store[$i]);
     }
 
+    //동데이터가공
+    for($i=0;$i<$query_result_dong['output_cnt'];$i++){
+
+    	array_push($dong_data, $query_result_dong[$i]);
+    }
+
+    //동+메뉴데이터
+    for($i=0;$i<$query_result_store_dong['output_cnt'];$i++){
+
+    	array_push($dong_menu_data, $query_result_store_dong[$i]);
+    }
+
+    for($i=0;$i<$query_result_random['output_cnt'];$i++){
+
+    	array_push($random_data, $query_result_random[$i]);
+    }
 
 
 
@@ -62,8 +92,18 @@
 
 
 ?>
-
-	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&family=Nanum+Pen+Script&family=Sunflower:wght@300&display=swap" rel="stylesheet">	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Orbit&family=Stylish&display=swap" rel="stylesheet">
@@ -76,114 +116,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
-<style >
-	#container {
-		display: flex;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
 
-	#map {
-		width: 700px;
-		height: 800px;
-		border:  3px solid white;
-		border-radius: 15px;
-	}
-
-	#textbox {
-		width: 400px;
-		height: 800px;
-		background-color: #dfebf5;
-		border: 3px solid #80beed;
-		border-radius: 15px;
-		text-align: center; /* 추가 */
-		position: relative;
-	}
-
-	#dong,#food,#time {
-		width: 300px;
-		height: 40px;
-		margin: 20px 0 auto; /* 가운데 정렬을 위한 마진 설정 */
-		border: 3px solid #80beed;
-		border-radius: 10px;
-	}
-	#abc{
-		margin: 20px 0  auto;
-		font-size: x-large;
-		font-family: "Orbit", sans-serif;
-		color: #454f52;
-		font-weight: bold;
-		margin-bottom: 20px
-	}
-	#head{
-		margin: 10px 0 auto;
-		font-size: 80px;
-		font-weight: 300;
-		font-family: "Black Han Sans", sans-serif;
-		color: #2d65c4;
-	}
-	#btn{
-		width: 200px;
-		color: white;
-		background-color: #2d65c4;
-		margin: 50px 0 auto;
-		height: 40px;
-		font-weight: 100;
-		border-radius: 5px;
-		font-size: 22px;
-		font-family: "Black Han Sans", sans-serif;
-	}
-	#boxbox{
-		style="padding:5px;
-		font-size:15px;
-		text-align:center;
-		font-weight:bold;
-		width:100%;
-		width:200px;
-		background-color: rgba(135, 206, 235, 0.5);
-		font-family: "Black Han Sans", sans-serif;"
-	}
-	#img{
-		width: 180px;
-	 	height: 200px;
-	  	border: 5px solid #80beed;
-	   	border-radius: 5px;
-	   	margin-right: 5px;
-	   	margin-left: 10px;
-	}
-	#imgbox{
-		display: flex;
-		flex-direction: row;
-	  	align-items: center;
-	   	margin-right: 10px;
-	}
-	 #left_button, #right_button {
-        position: absolute; /* 부모 요소를 기준으로 위치를 설정합니다. */
-        bottom: 5px; /* 아래쪽에 배치합니다. */
-        width: 60px; /* 버튼의 너비를 설정합니다. */
-        height: 30px; /* 버튼의 높이를 설정합니다. */
-        border-radius: 5px;
-        background-color: #2d65c4;
-        border: 1px solid #2d65c4;
-    }
-    #left_button{
-    	left: 10px;
-    }
-    #right_button{
-    	right: 10px;
-    }
-    #wheel{
-    	overflow: auto;
-    	width: 400px;
-    	height: 500px;
-    }
-    ::-webkit-scrollbar{
-    	display: none;
-    }
-
-</style>
 
 <body>
     <div id="container">
@@ -219,7 +152,7 @@
 
 		var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
-		// 마커를 표시할 위치 배열
+		// 내가 추천하는 식당에 마크 찍어주기
 		var positions = [
 		    new kakao.maps.LatLng(35.40786, 129.15774),
 		    new kakao.maps.LatLng(35.3292, 129.0122),
@@ -253,6 +186,22 @@
 
 		// Post로 입력받은 값 넣기(키워드검색)
 		ps.keywordSearch('양산'+'<?php echo $dong; ?> <?php echo $food; ?>', placesSearchCB); 
+
+		//장소객체생성
+		var places = new kakao.maps.services.Places();
+
+
+		function searchPlaces() {
+
+		    var keyword = document.getElementById('keyword').value;
+
+		    if (!keyword.replace(/^\s+|\s+$/g, '')) {
+		        removeAllChildNods(listEl);
+		        return false;
+		    }
+
+		    ps.keywordSearch( keyword, placesSearchCB); 
+		}	
 
 		// 키워드 검색 완료 시 호출되는 콜백함수 
 		function placesSearchCB (data, status, pagination) {
@@ -299,26 +248,77 @@
 			    } elseif (empty($dong)) {
 			        echo $food;
 			    }
-			?><br>추천맛집</p>
+			?><br>안심식당</p>
 			<div id="wheel">
-		
-<!-- 음식부문 -->
+<!-- 동과 음식 둘다 입력됐을 경우 출력하는 부분 -->
+<?php
+	if($query_result_store_dong > 0){
+		for($i=0;$i<$query_result_store_dong['output_cnt'];$i++){
+			$total = $dong_menu_data[$i];
+			?>
+			<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+                <?php echo $total['dong']; ?> 
+                <?php echo $total['name']; ?> 
+            </p id="fff"> 
+                <br>
+            <p id="fff">
+                <?php echo $total['address']; ?> <br>
+           	</p>
+           	<p id="fff">
+               메뉴 : <?php echo str_replace('_', ' ', $total['menu']); ?> 
+            </p>
+            <p id="fff">
+               오픈시간 : <?php echo $total['open_time']; ?>  
+               마감시간 : <?php echo $total['close_time']; ?>
+            </p >
+        <?php
+	}
+}
+?>	
+
+<!-- 동만 입력됐을 때 출력하는 부분 -->
+<?php
+	if(empty($food) && $query_result_dong['output_cnt'] > 0){
+		for($i=0;$i<$query_result_dong['output_cnt'];$i++){
+			$dong = $dong_data[$i];
+			?>
+			<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+                <?php echo $dong['dong']; ?> 
+                <?php echo $dong['name']; ?> 
+            </p> 
+                <br>
+            <p id="fff">
+                <?php echo $dong['address']; ?> <br>
+           	</p>
+           	<p id="fff">
+               메뉴 : <?php echo str_replace('_', ' ', $dong['menu']); ?> 
+            </p>
+            <p id="fff">
+               오픈시간 : <?php echo $dong['open_time']; ?>  
+               마감시간 : <?php echo $dong['close_time']; ?>
+            </p>
+        <?php
+	}
+}
+?>		
+<!-- 음식만 입력됐을 때 출력하는부분 -->
 <?php 
     if(empty($dong) && $query_result_store['output_cnt'] > 0){
         for($i=0; $i<$query_result_store['output_cnt']; $i++){
             $store = $menu_data[$i];
             ?>
-            <p id="abc" style="margin-bottom: 5px;" onclick="gogo();">
+            <p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
                 <?php echo $store['dong']; ?> 
                 <?php echo $store['name']; ?> 
             </p> 
                 <br>
-            <p>
+            <p id="fff">
                 <?php echo $store['address']; ?> <br>
            	</p>
-           	<p>
+           	<p id="fff">
                메뉴 : <?php echo str_replace('_', ' ', $store['menu']); ?> 
             </p>
+            <p id="fff">
                오픈시간 : <?php echo $store['open_time']; ?>  
                마감시간 : <?php echo $store['close_time']; ?>
             </p>
@@ -326,11 +326,94 @@
         }
     }
 ?>
-			</div>
+<!-- 조회된 값이 없을 때  -->
+<?php
+    // 동조회 없을시
+    if ($query_result_dong['output_cnt'] === 0 && $query_result_store['output_cnt'] === 0) {
+        ?>
+        <p id="abc"> 조회된 안심식당이 없습니다 </p>
+        <p id="abc" style="margin-bottom:40px">이곳은 어떠세요?</p>
+        <p id="fff">상호명 클릭시 이동합니다</p>
+        <?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
+        	$random = $random_data[$i];
+        	?>
+		<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+            <?php echo $random['dong']; ?> 
+            <?php echo $random['name']; ?> 
+        </p> 
+            <br>
+        <p id="fff">
+            <?php echo $random['address']; ?> <br>
+       	</p>
+       	<p id="fff">
+           메뉴 : <?php echo str_replace('_', ' ', $random['menu']); ?> 
+        </p>
+        <p id="fff">
+           오픈시간 : <?php echo $random['open_time']; ?>  
+           마감시간 : <?php echo $random['close_time']; ?>
+        </p>
+        <?php
+    }
+    ?>
+        <?php
+   	// 음식조회 없을시
+    } else if ($query_result_store['output_cnt'] === 0) {
+        ?>
+        <p id="abc"> 조회된 안심식당이 없습니다 </p>
+        <p id="abc" style="margin-bottom:40px">이곳은 어떠세요?</p>
+        <p id="fff">상호명 클릭시 이동합니다</p>
+        <?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
+        	$random = $random_data[$i];
+        	?>
+        <p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+            <?php echo $random['dong']; ?> 
+            <?php echo $random['name']; ?> 
+        </p> 
+            <br>
+        <p id="fff">
+            <?php echo $random['address']; ?> <br>
+       	</p>
+       	<p id="fff">
+           메뉴 : <?php echo str_replace('_', ' ', $random['menu']); ?> 
+        <p id="fff">
+           오픈시간 : <?php echo $random['open_time']; ?>  
+           마감시간 : <?php echo $random['close_time']; ?>
+        </p>
+        <?php
+    }
+    ?>
+        <?php
+    } else if ($query_result_store_dong['output_cnt'] === 0 && $query_result_dong['output_cnt'] === 0 && $query_result_store['output_cnt'] === 0){
+		?>
+		<p id="abc"> 조회된 안심식당이 없습니다 </p>
+		<p id="abc" style="margin-bottom:40px">이곳은 어떠세요?</p>
+		<p id="fff">상호명 클릭시 이동합니다</p>
+		<?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
+        	$random = $random_data[$i];
+        	?>
+		<p id="abc" style="margin-bottom: 5px; " onclick="MoveToPlace();">
+            <?php echo $random['dong']; ?> 
+            <?php echo $random['name']; ?> 
+        </p> 
+            <br>
+        <p id="fff">
+            <?php echo $random['address']; ?> <br>
+       	</p>
+       	<p id="fff">
+           메뉴 : <?php echo str_replace('_', ' ', $random['menu']); ?> 
+        <p id="fff">
+           오픈시간 : <?php echo $random['open_time']; ?>  
+           마감시간 : <?php echo $random['close_time']; ?>
+        </p>
+        <?php
+    }
+    ?>
+		<?php
+	}
+	?>
+		</div>
 		</div>
 	</div>
 
-</body>
-</html>
 </body>
 </html>

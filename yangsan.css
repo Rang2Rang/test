@@ -41,10 +41,11 @@
 	#head{
 		margin: 15px 0 auto;
 		margin-bottom: 30px;
-		font-size: 80px;
+		font-size: 70px;
 		font-weight: 300;
 		font-family: "Black Han Sans", sans-serif;
 		color: #2d65c4;
+		line-height: 1.2
 	}
 	#btn{
 		width: 200px;
