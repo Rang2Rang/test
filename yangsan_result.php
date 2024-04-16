@@ -1,20 +1,20 @@
 <?php
 
-    define('__CORE_TYPE__','view');
-    include $_SERVER['DOCUMENT_ROOT'].'/function/core.php';
+	define('__CORE_TYPE__','view');
+	include $_SERVER['DOCUMENT_ROOT'].'/function/core.php';
 
-    $dong = $_POST['dong'];
-    $food = $_POST['food'];
+	$dong = $_POST['dong'];
+	$food = $_POST['food'];
 
 
-    //양산에 있는 동으로만 조회할 수 있도록 쿼리문 작성
-	$select_sql = "SELECT sid FROM yangsan_dong_info WHERE dong_name = '$dong'";
+	//양산에 있는 동으로만 조회할 수 있도록 쿼리문 작성
+	$select_sql = "SELECT sid FROM yangsan_dong_info WHERE dong = '$dong'";
 	$query_result = sql($select_sql);
 	$query_result = select_process($query_result);
 
 
 	// 입력받은 동과 메뉴로 데이터베이스 조회하는 쿼리문 생성
-	$select_sql = "SELECT dong, name, menu, address, number, park, open_time, close_time FROM yangsan_store_info";
+	$select_sql = "SELECT dong, name, menu, address, number, park, open_time, close_time FROM yangsan_store";
 
 	// 동과 메뉴 정보를 추가하여 쿼리문 생성
 	$store_dong_sql = $select_sql . " WHERE menu LIKE '%$food%' AND dong = '$dong'";
@@ -26,56 +26,52 @@
 	$store_sql = $select_sql . " WHERE menu LIKE '%$food%'";
 
 	//메뉴만 입력했을 때 조회되는 정보 가공
-    $query_result_store = sql($store_sql);
-    $query_result_store = select_process($query_result_store);
+	$query_result_store = sql($store_sql);
+	$query_result_store = select_process($query_result_store);
 
-    //동만 입력시
+	//동만 입력시
 
-    $dong_sql = $select_sql. " WHERE dong = '$dong'";
+	$dong_sql = $select_sql. " WHERE dong = '$dong'";
 
-    //동만 입력했을 때 조회되는 정보 가공
-    $query_result_dong = sql($dong_sql);
-    $query_result_dong = select_process($query_result_dong);
+	//동만 입력했을 때 조회되는 정보 가공
+	$query_result_dong = sql($dong_sql);
+	$query_result_dong = select_process($query_result_dong);
 
-    $rand_sql = "SELECT * FROM yangsan_store_info ORDER BY RAND() LIMIT 1;";
+	$rand_sql = "SELECT * FROM yangsan_store ORDER BY RAND() LIMIT 1;";
 
-    $query_result_random = sql($rand_sql);
-    $query_result_random = select_process($query_result_random);
+	$query_result_random = sql($rand_sql);
+	$query_result_random = select_process($query_result_random);
 
-   
+	//메뉴데이터
+	$menu_data = array();
+	//동+메뉴데이터
+	$dong_menu_data = array();
+	//동데이터
+	$dong_data = array();
+	//랜덤데이터
+	$random_data = array();
 
-	 
-    //메뉴데이터
-    $menu_data = array();
-    //동+메뉴데이터
-    $dong_menu_data = array();
-    //동데이터
-    $dong_data = array();
-    //랜덤데이터
-    $random_data = array();
+	//메뉴데이터가공
+	for($i=0;$i<$query_result_store['output_cnt'];$i++){
+		array_push($menu_data, $query_result_store[$i]);
+	}
 
-    //메뉴데이터가공
-    for($i=0;$i<$query_result_store['output_cnt'];$i++){
+	//동데이터가공
+	for($i=0;$i<$query_result_dong['output_cnt'];$i++){
 
-    	array_push($menu_data, $query_result_store[$i]);
-    }
+		array_push($dong_data, $query_result_dong[$i]);
+	}
 
-    //동데이터가공
-    for($i=0;$i<$query_result_dong['output_cnt'];$i++){
+	//동+메뉴데이터
+	for($i=0;$i<$query_result_store_dong['output_cnt'];$i++){
 
-    	array_push($dong_data, $query_result_dong[$i]);
-    }
+		array_push($dong_menu_data, $query_result_store_dong[$i]);
+	}
 
-    //동+메뉴데이터
-    for($i=0;$i<$query_result_store_dong['output_cnt'];$i++){
+	for($i=0;$i<$query_result_random['output_cnt'];$i++){
 
-    	array_push($dong_menu_data, $query_result_store_dong[$i]);
-    }
-
-    for($i=0;$i<$query_result_random['output_cnt'];$i++){
-
-    	array_push($random_data, $query_result_random[$i]);
-    }
+		array_push($random_data, $query_result_random[$i]);
+	}
 
 
 
@@ -83,7 +79,7 @@
 	    // 둘 다 입력되지 않은 경우
 	    echo "<script>alert('하나라도 입력해주세요.');</script>";
 	    echo "<script>window.location.href = 'yangsan.php';</script>";
-	} elseif (!empty($dong) && $query_result['output_cnt'] === 0) {
+	} else if (!empty($dong) && $query_result['output_cnt'] === 0) {
 	    // dong이 유효하지 않은 경우
 	    echo "<script>alert('양산에 있는 동만 입력해주세요.');</script>";
 	    echo "<script>window.location.href = 'yangsan.php';</script>";
@@ -114,9 +110,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Black+Han+Sans&display=swap" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-
-
 
 <body>
     <div id="container">
@@ -154,35 +147,23 @@
 
 		// 내가 추천하는 식당에 마크 찍어주기
 		var positions = [
-		    new kakao.maps.LatLng(35.40786, 129.15774),
-		    new kakao.maps.LatLng(35.3292, 129.0122),
-		    new kakao.maps.LatLng(35.3070, 129.1064),
-		    new kakao.maps.LatLng(35.3789, 129.1514),
-		    new kakao.maps.LatLng(35.3661, 128.9188),
-		    new kakao.maps.LatLng(35.3972, 129.0545),
-		    new kakao.maps.LatLng(35.4472, 129.0842),
-		    new kakao.maps.LatLng(35.3420, 129.0376),
-		    new kakao.maps.LatLng(35.3491, 129.0406),
-		    new kakao.maps.LatLng(35.3375, 129.0285),
-		    new kakao.maps.LatLng(35.3553, 129.0374),
-		    new kakao.maps.LatLng(35.3576, 129.0472),
-		    new kakao.maps.LatLng(35.3453, 129.0284),
-		    new kakao.maps.LatLng(35.4153, 129.1694),
-		    new kakao.maps.LatLng(35.3708, 129.1487)
+			new kakao.maps.LatLng(35.40786, 129.15774),
+			new kakao.maps.LatLng(35.3292, 129.0122),
+			new kakao.maps.LatLng(35.3070, 129.1064),
+			new kakao.maps.LatLng(35.3789, 129.1514),
+			new kakao.maps.LatLng(35.3661, 128.9188),
+			new kakao.maps.LatLng(35.3972, 129.0545),
+			new kakao.maps.LatLng(35.4472, 129.0842),
+			new kakao.maps.LatLng(35.3420, 129.0376),
+			new kakao.maps.LatLng(35.3491, 129.0406),
+			new kakao.maps.LatLng(35.3375, 129.0285),
+			new kakao.maps.LatLng(35.3553, 129.0374),
+			new kakao.maps.LatLng(35.3576, 129.0472),
+			new kakao.maps.LatLng(35.3453, 129.0284),
+			new kakao.maps.LatLng(35.4153, 129.1694),
+			new kakao.maps.LatLng(35.3708, 129.1487)
 
 		];
-
-		// 배열을 사용하여 여러 마커 생성 및 지도에 표시
-		positions.forEach(function(position) {
-		    var marker = new kakao.maps.Marker({
-		        position: position, // 마커의 위치
-		        image: markerImage  // 마커 이미지 설정
-		    });
-		    
-		    // 마커가 지도 위에 표시되도록 설정
-		    marker.setMap(map);
-		});
-		
 
 		// Post로 입력받은 값 넣기(키워드검색)
 		ps.keywordSearch('양산'+'<?php echo $dong; ?> <?php echo $food; ?>', placesSearchCB); 
@@ -190,56 +171,94 @@
 		//장소객체생성
 		var places = new kakao.maps.services.Places();
 
-
 		function searchPlaces() {
+			var keyword = document.getElementById('keyword').value;
 
-		    var keyword = document.getElementById('keyword').value;
+			if (!keyword.replace(/^\s+|\s+$/g, '')) {
+					removeAllChildNods(listEl);
+					return false;
+			}
 
-		    if (!keyword.replace(/^\s+|\s+$/g, '')) {
-		        removeAllChildNods(listEl);
-		        return false;
-		    }
-
-		    ps.keywordSearch( keyword, placesSearchCB); 
+			ps.keywordSearch( keyword, placesSearchCB); 
 		}	
 
 		// 키워드 검색 완료 시 호출되는 콜백함수 
 		function placesSearchCB (data, status, pagination) {
-		    if (status === kakao.maps.services.Status.OK) {
+			if (status === kakao.maps.services.Status.OK) {
 
-		        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-		        // LatLngBounds 객체에 좌표를 추가합니다
-		        var bounds = new kakao.maps.LatLngBounds();
+					// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+					// LatLngBounds 객체에 좌표를 추가합니다
+					var bounds = new kakao.maps.LatLngBounds();
 
 
-		        for (var i=0; i<data.length; i++) {
-		            displayMarker(data[i]);    
-		            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-		        }
+					for (var i=0; i<data.length; i++) {
+							displayMarker(data[i]);    
+							bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+					}
 
-		        console.log(bounds);       
+					console.log(bounds);       
 
-		        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-		        map.setBounds(bounds);
-		    } 
+					// 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+					map.setBounds(bounds);
+			} 
 		}
 
-		// 지도에 마커를 표시하는 함수입니다
+		// <----- 2024-04-15 태영 수정 -----> //
+
+		// 배열을 사용하여 여러 마커 생성 및 지도에 표시
+		var markers = []; // 마커를 저장할 배열
+
+		positions.forEach(function(position, index) {
+    var marker = new kakao.maps.Marker({
+        position: position,
+        image: markerImage
+    });
+    marker.setMap(map);
+    markers.push(marker); // 마커 저장
+	});
+
+		// 지도에 마커를 표시하는 함수
 		function displayMarker(place) {
-		    
-		    // 마커를 생성하고 지도에 표시합니다
-		    var marker = new kakao.maps.Marker({
-		        map: map,
-		        position: new kakao.maps.LatLng(place.y, place.x) 
-		    });
+		var marker = new kakao.maps.Marker({
+				map: map,
+				position: new kakao.maps.LatLng(place.y, place.x)
+		});
 
-		    // 마커에 클릭이벤트를 등록합니다
-		    kakao.maps.event.addListener(marker, 'click', function() {
-		        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-		        infowindow.setContent('<div style="padding:5px;font-size:17px;text-align:center;font-weight:bold;width:100%;width:170px;background-color: #2d65c4;color:white;border:1px solid white;border-radius: 9px;box-sizing: border-box; ">' + place.place_name + '</div>');
-		        infowindow.open(map, marker);
-		    });
-		}
+		kakao.maps.event.addListener(marker, 'click', function() {
+				infowindow.setContent('<div style="padding:5px;">' + place.place_name + '</div>');
+				infowindow.open(map, marker);
+				map.setCenter(marker.getPosition());
+		});
+	}
+
+		// 지정된 인덱스의 마커 위치로 지도 중심 이동
+		function moveToPlace(name) {
+    ps.keywordSearch(name, function(data, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            var coords = new kakao.maps.LatLng(data[0].y, data[0].x);
+            map.setCenter(coords);
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: coords
+            });
+            infowindow.setContent('<div style="padding:5px;">' + data[0].place_name + '</div>');
+            infowindow.open(map, marker);
+        }
+    });
+	}
+
+	// 검색 조건에 맞는 장소를 검색
+	ps.keywordSearch('<?php echo $dong; ?> <?php echo $food; ?>', function(data, status, pagination) {
+			if (status === kakao.maps.services.Status.OK) {
+					// 검색된 장소를 지도에 마커로 표시
+					for (var i=0; i<data.length; i++) {
+							displayMarker(data[i]);
+					}
+			}
+	});
+
+	// <----- 태영 수정 끝 -----> //
+
 	</script>
 		<div id="textbox">
 			<p id="head" ><?php
@@ -307,7 +326,7 @@
         for($i=0; $i<$query_result_store['output_cnt']; $i++){
             $store = $menu_data[$i];
             ?>
-            <p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+            <p id="abc" onclick="moveToPlace('<?php echo $store['name']; ?>');">
                 <?php echo $store['dong']; ?> 
                 <?php echo $store['name']; ?> 
             </p> 

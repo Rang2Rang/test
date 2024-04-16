@@ -8,7 +8,7 @@
 		// DB host 정보 기본값
 		$host = "127.0.0.1";
 		$user = "root";
-		$password = '1234';
+		$password = "1234";
 		$dbname = "yangsan";
 		$con = new mysqli($host, $user, $password, $dbname);
 
