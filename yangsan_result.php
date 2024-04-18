@@ -224,22 +224,61 @@
 		    } 
 		}
 
-		// 지도에 마커를 표시하는 함수입니다
-		function displayMarker(place) {
-		    
-		    // 마커를 생성하고 지도에 표시합니다
-		    var marker = new kakao.maps.Marker({
-		        map: map,
-		        position: new kakao.maps.LatLng(place.y, place.x) 
-		    });
 
-		    // 마커에 클릭이벤트를 등록합니다
-		    kakao.maps.event.addListener(marker, 'click', function() {
-		        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-		        infowindow.setContent('<div style="padding:5px;font-size:17px;text-align:center;font-weight:bold;width:100%;width:170px;background-color: #2d65c4;color:white;border:1px solid white;border-radius: 9px;box-sizing: border-box; ">' + place.place_name + '</div>');
-		        infowindow.open(map, marker);
-		    });
-		}
+      var markers = []; // 마커를 저장할 배열
+
+      positions.forEach(function(position, index) {
+    var marker = new kakao.maps.Marker({
+        position: position,
+        image: markerImage
+    });
+    marker.setMap(map);
+    markers.push(marker); // 마커 저장
+   });
+
+      // 지도에 마커를 표시하는 함수
+      function displayMarker(place) {
+      var marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(place.y, place.x)
+      });
+
+      kakao.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent('<div style="padding:5px;">' + place.place_name + '</div>');
+            infowindow.open(map, marker);
+            map.setCenter(marker.getPosition());
+      });
+   }
+
+   // 지정된 인덱스의 마커 위치로 지도 중심 이동
+   function moveToPlace(name) {
+      ps.keywordSearch(name, function(data, status) {
+         if (status === kakao.maps.services.Status.OK) {
+            var coords = new kakao.maps.LatLng(data[0].y, data[0].x);
+            map.setCenter(coords);
+            var marker = new kakao.maps.Marker({
+                  map: map,
+                  position: coords
+            });
+
+         infowindow.setContent('<div style="padding:5px;">' + data[0].place_name + '</div>');
+         infowindow.open(map, marker);
+         }
+    });
+   }
+
+   // 검색 조건에 맞는 장소를 검색
+   ps.keywordSearch('<?php echo $dong; ?> <?php echo $food; ?>', function(data, status, pagination) {
+         if (status === kakao.maps.services.Status.OK) {
+               // 검색된 장소를 지도에 마커로 표시
+               for (var i=0; i<data.length; i++) {
+                     displayMarker(data[i]);
+               }
+         }
+   });
+
+
+	// <----- 태영 수정 끝 -----> //
 	</script>
 		<div id="textbox">
 			<p id="head" ><?php
@@ -256,7 +295,7 @@
 		for($i=0;$i<$query_result_store_dong['output_cnt'];$i++){
 			$total = $dong_menu_data[$i];
 			?>
-			<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+			<p id="abc" style="margin-bottom: 5px;" onclick="moveToPlace('<?php echo $total['dong']?> <?php echo $total['name']?>');">
                 <?php echo $total['dong']; ?> 
                 <?php echo $total['name']; ?> 
             </p id="fff"> 
@@ -282,7 +321,7 @@
 		for($i=0;$i<$query_result_dong['output_cnt'];$i++){
 			$dong = $dong_data[$i];
 			?>
-			<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+			<p id="abc" onclick="moveToPlace('<?php echo $dong['dong']?> <?php echo $dong['name']?>');">
                 <?php echo $dong['dong']; ?> 
                 <?php echo $dong['name']; ?> 
             </p> 
@@ -307,7 +346,7 @@
         for($i=0; $i<$query_result_store['output_cnt']; $i++){
             $store = $menu_data[$i];
             ?>
-            <p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+            <p id="abc" onclick="moveToPlace('<?php echo $store['dong']?> <?php echo $store['name']?>');">
                 <?php echo $store['dong']; ?> 
                 <?php echo $store['name']; ?> 
             </p> 
@@ -337,7 +376,7 @@
         <?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
         	$random = $random_data[$i];
         	?>
-		<p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+		<p id="abc" onclick="moveToPlace('<?php echo $random['dong']?> <?php echo $random['name']?>');">
             <?php echo $random['dong']; ?> 
             <?php echo $random['name']; ?> 
         </p> 
@@ -365,7 +404,7 @@
         <?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
         	$random = $random_data[$i];
         	?>
-        <p id="abc" style="margin-bottom: 5px;" onclick="MoveToPlace();">
+        <p id="abc" onclick="moveToPlace('<?php echo $random['dong']?> <?php echo $random['name']?>');">
             <?php echo $random['dong']; ?> 
             <?php echo $random['name']; ?> 
         </p> 
@@ -391,7 +430,7 @@
 		<?php for($i=0;$i<$query_result_random['output_cnt'];$i++){
         	$random = $random_data[$i];
         	?>
-		<p id="abc" style="margin-bottom: 5px; " onclick="MoveToPlace();">
+		<p id="abc" onclick="moveToPlace('<?php echo $random['dong']?> <?php echo $random['name']?>');">
             <?php echo $random['dong']; ?> 
             <?php echo $random['name']; ?> 
         </p> 
